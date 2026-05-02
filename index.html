@@ -1,0 +1,571 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You 💗</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg,#ffd6e7,#ffe8cc,#e0f7ff);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .title, .message {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .page {
+            display: none;
+        }
+
+        #page1 {
+            display: block
+        }
+
+        .gift {
+            font-size: 140px;
+            cursor: pointer;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%,100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-10px)
+            }
+        }
+
+        .title {
+            color: #ff4d88;
+            font-size: 28px;
+            margin: 5px;
+        }
+
+        .subtitle {
+            color: #ff4d88;
+            font-size: 18px;
+        }
+
+        .couple {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .couple img {
+                width: 170px;
+                height: 170px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid white;
+                cursor: pointer;
+            }
+
+        .days {
+            color: #ff4d88;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 20px;
+            background: #ff85a2;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+            button:hover {
+                transform: translateY(-3px) scale(1.05);
+                box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4);
+            }
+
+        .album-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 100vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .message {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 20px;
+            color: #ff4d88;
+            width: 420px;
+            max-width: 90vw;
+            line-height: 1.4;
+            font-size: 15px;
+            white-space: pre-line;
+            min-height: 120px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .book {
+            position: relative;
+            width: 520px;
+            max-width: 95vw;
+            height: 260px;
+            perspective: 3500px;
+        }
+
+            .book::after {
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: 0;
+                height: 100%;
+                width: 3px;
+                background: rgba(0,0,0,.15);
+                transform: translateX(-50%);
+                z-index: 1000;
+            }
+
+        .pageBook {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            left: 50%;
+            background: white;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(.77,0,.18,1);
+            border-radius: 10px;
+            border: 5px solid white;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+            .pageBook img, .pageBook video {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                background: #000;
+            }
+
+            .pageBook.flipped {
+                transform: rotateY(-180deg);
+            }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+            #lightbox img, #lightbox video {
+                max-width: 90%;
+                max-height: 80vh;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: none;
+                outline: none;
+            }
+
+        .emoji-fly {
+            position: fixed;
+            font-size: 35px;
+            pointer-events: none;
+            z-index: 10001;
+            animation: flyEmoji 2s ease-out forwards;
+        }
+
+        @keyframes flyEmoji {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--tw), var(--th)) scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .book {
+                height: 220px !important;
+            }
+
+            .message {
+                font-size: 13px;
+                width: 95vw;
+            }
+
+            .couple img {
+                width: 140px;
+                height: 140px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="page1">
+        <div class="gift" onclick="openGift()">🎁</div>
+        <h2 id="hint" style="color:#ff85a2">Bấm vào hộp quà nha</h2>
+        <div class="couple" id="couple">
+            <h2 class="title">Anh chào Bé Ngoan 💗</h2>
+            <div class="subtitle">Anh có điều muốn nói...</div>
+            <div>
+                <img src="images/anhanh.jpg">
+                💗
+                <img src="images/anhem.jpg">
+            </div>
+            <div class="days" id="days"></div>
+            <div style="margin-top: 20px;">
+                <button id="yesBtn" onclick="openPage2()">Em mở thư đi nè 💌</button><br>
+                <button id="noBtn" onclick="shrinkNo()" style="background: #aaa; font-size: 14px; margin-top: 10px;">Hông thèm đâu! 😛</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="album-container">
+            <div class="message" id="typing"></div>
+            <div class="book" id="bookMain">
+                <div class="pageBook"><img src="images/anhanh.jpg"></div>
+                <div class="pageBook"><img src="images/anh1.jpg"></div>
+                <div class="pageBook"><video playsinline loop><source src="images/video1.mp4"></video></div>
+                <div class="pageBook"><img src="images/anh2.jpg"></div>
+                <div class="pageBook"><video playsinline loop><source src="images/video2.mp4"></video></div>
+                <div class="pageBook"><img src="images/anh3.jpg"></div>
+                <div class="pageBook"><video playsinline loop><source src="https://res.cloudinary.com/dkqox2soz/video/upload/v1777617684/video3_spy0jg.mp4"></video></div>
+                <div class="pageBook"><img src="images/anh5.jpg"></div>
+                <div class="pageBook"><video playsinline loop><source src="images/video4.mp4"></video></div>
+                <div class="pageBook"><img src="images/anhem.jpg"></div>
+            </div>
+            <div class="controls">
+                <button onclick="prevPage()">←</button>
+                <button onclick="nextPage()">→</button>
+            </div>
+            <button onclick="backHome()">⬅ Quay lại</button>
+        </div>
+    </div>
+
+    <div id="lightbox" onclick="handleLightboxClick(event)"></div>
+
+    <audio id="music" loop><source src="images/cute.mp3"></audio>
+    <audio id="flipSound"><source src="images/page.mp3"></audio>
+
+    <script>
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        const noTexts = [
+            "Bé chắc chưa? 🤨",
+            "Nghĩ lại đi mà... 🥺",
+            "Bấm nút hồng kìa! 👉",
+            "Đừng bấm đây nữa! ❌",
+            "Sắp biến mất rồi đó! ✨",
+            "Chịu thua chưa? 😏"
+        ];
+        let noCount = 0; // Biến đếm số lần bấm nút No
+
+        const loveDate = new Date("2026-01-23");
+        const daysLabel = document.getElementById("days");
+        const updateDays = () => {
+            const diff = new Date() - loveDate;
+            daysLabel.innerHTML = "Chúng ta đã bên nhau 💕 " + Math.floor(diff / (1000 * 60 * 60 * 24)) + " ngày";
+        };
+        updateDays();
+
+        function openGift() {
+            initAudio(); // 🔥 bắt buộc
+
+            playConfettiSound();
+
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+            document.querySelector(".gift").style.display = "none";
+            document.getElementById("hint").style.display = "none";
+            document.getElementById("couple").style.display = "flex";
+
+            document.getElementById("music").play().catch(() => { });
+        }
+
+        function openPage2() {
+            playConfettiSound(); // 🔥 thêm dòng này
+
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+            document.getElementById("page1").style.display = "none";
+            document.getElementById("page2").style.display = "block";
+
+            initBook();
+            typeText();
+        }
+
+        let typed = false;
+        function typeText() {
+            if (typed) return; typed = true;
+            const text = `Từ ngày gặp em, mọi thứ trong anh trở nên dịu dàng hơn.\nNhững ngày bình thường cũng trở nên đặc biệt,\nchỉ vì trong đó có em xuất hiện.\n\nAnh không hứa sẽ cho em tất cả,\nnhưng anh hứa sẽ luôn cố gắng vì em,\ncùng em đi qua những ngày vui vẻ nhất\nvà cả những lúc mệt mỏi nhất.\n\nCảm ơn em đã đến,\ncảm ơn em đã ở lại,\nvà hy vọng những kỷ niệm phía dưới\nchỉ là bắt đầu cho thật nhiều ngày sau nữa… 💗`;
+            let i = 0; const box = document.getElementById("typing");
+            function typing() {
+                if (i < text.length) {
+                    box.innerHTML += text.charAt(i++);
+                    setTimeout(typing, 50); // Tốc độ chạy chữ nhanh hơn (50ms)
+                }
+            }
+            typing();
+        }
+
+        let current = 0; let pages = [];
+        function initBook() {
+            pages = Array.from(document.querySelectorAll(".pageBook"));
+            pages.forEach((page, i) => {
+                if (!page.querySelector(".front")) {
+                    const content = page.innerHTML;
+                    page.innerHTML = `<div class="front">${content}</div><div class="back">${content}</div>`;
+                }
+                page.style.zIndex = pages.length - i;
+            });
+            playVideoCurrent();
+        }
+
+        function nextPage() {
+            if (current < pages.length) {
+                playFlipSound();
+
+                requestAnimationFrame(() => { // 🔥 chống lag click
+                    pages[current].classList.add("flipped");
+                    pages[current].style.zIndex = 100 + current;
+                    current++;
+                    playVideoCurrent();
+                });
+            }
+        }   
+
+        function prevPage() {
+            if (current > 0) {
+                playFlipSound();
+
+                requestAnimationFrame(() => {
+                    current--;
+                    pages[current].classList.remove("flipped");
+                    pages[current].style.zIndex = pages.length - current;
+                    playVideoCurrent();
+                });
+            }
+        }
+
+        function playVideoCurrent() {
+            document.querySelectorAll(".pageBook video").forEach(v => { v.pause(); });
+            const page = pages[current];
+            const v = page ? page.querySelector("video") : null;
+            if (v) {
+                const music = document.getElementById("music");
+                try { music.pause(); } catch (e) { }
+                v.muted = false;
+                v.play().catch(() => {
+                    v.muted = true;
+                    v.play();
+                });
+            } else {
+                document.getElementById("music").play().catch(() => { });
+            }
+        }
+
+        let emojiInterval = null;
+        document.addEventListener('click', function (e) {
+            const target = e.target.closest('.couple img, .pageBook img, .pageBook video');
+            if (target && !e.target.closest('#lightbox')) {
+                e.stopPropagation();
+                openLightbox(target);
+            }
+        });
+
+        function openLightbox(item) {
+            const lb = document.getElementById("lightbox");
+            lb.innerHTML = '';
+            let content;
+            if (item.tagName === 'VIDEO') {
+                content = document.createElement('video');
+                content.src = item.querySelector('source') ? item.querySelector('source').src : item.src;
+                content.controls = true;
+                content.muted = false;
+                content.playsinline = true;
+                content.currentTime = item.currentTime;
+                item.pause();
+
+                lb.appendChild(content);
+                lb.style.display = 'flex';
+
+                setTimeout(() => {
+                    content.play().catch(e => {
+                        content.muted = true;
+                        content.play();
+                    });
+                }, 50);
+            } else {
+                content = document.createElement('img');
+                content.src = item.src;
+                lb.appendChild(content);
+                lb.style.display = 'flex';
+            }
+        }
+
+        function handleLightboxClick(e) {
+            const media = e.target.closest('img, video');
+            if (media) {
+                e.stopPropagation();
+                if (!emojiInterval) {
+                    emojiInterval = setInterval(() => {
+                        const span = document.createElement("span");
+                        span.className = "emoji-fly";
+                        span.innerHTML = ["🥰", "😘", "💖", "💘", "💓"][Math.floor(Math.random() * 5)];
+                        span.style.setProperty('--tw', (Math.random() - 0.5) * 500 + "px");
+                        span.style.setProperty('--th', (Math.random() - 0.5) * 500 + "px");
+                        span.style.left = "50%"; span.style.top = "50%";
+                        document.body.appendChild(span);
+                        setTimeout(() => span.remove(), 2000);
+                    }, 150);
+                } else {
+                    clearInterval(emojiInterval);
+                    emojiInterval = null;
+                }
+            } else {
+                closeLightbox();
+            }
+        }
+
+        function closeLightbox() {
+            const lb = document.getElementById("lightbox");
+            const lbVideo = lb.querySelector('video');
+            if (lbVideo) {
+                const originalVideo = pages[current]?.querySelector('video');
+                if (originalVideo) { originalVideo.currentTime = lbVideo.currentTime; }
+            }
+            clearInterval(emojiInterval); emojiInterval = null;
+            lb.style.display = 'none'; lb.innerHTML = '';
+            playVideoCurrent();
+        }
+
+        let noScale = 1; let yesScale = 1;
+        function shrinkNo() {
+            noScale -= 0.12; // Thu nhỏ nút No
+            yesScale += 0.15; // Phóng to nút Yes
+
+            const noBtn = document.getElementById('noBtn');
+            const yesBtn = document.getElementById('yesBtn');
+
+            // Đổi chữ theo danh sách noTexts
+            if (noCount < noTexts.length) {
+                noBtn.innerHTML = noTexts[noCount];
+                noCount++;
+            }
+
+            // Nếu nút quá nhỏ thì ẩn luôn
+            if (noScale < 0.2) {
+                noBtn.style.display = 'none';
+            }
+
+            noBtn.style.transform = `scale(${noScale})`;
+            yesBtn.style.transform = `scale(${yesScale})`;
+        }
+
+
+        function backHome() { location.reload(); }
+
+        function playConfettiSound() {
+            if (!audioCtx) return;
+
+            const ctx = audioCtx;
+
+            // bụp
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.frequency.value = 180;
+            gain.gain.value = 1;
+
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.2);
+
+            // lách tách nhẹ
+            for (let i = 0; i < 8; i++) {
+                const noise = ctx.createBufferSource();
+                const buffer = ctx.createBuffer(1, 44100, 44100);
+                const data = buffer.getChannelData(0);
+
+                for (let j = 0; j < data.length; j++) {
+                    data[j] = Math.random() * 2 - 1;
+                }
+
+                noise.buffer = buffer;
+
+                const g = ctx.createGain();
+                noise.connect(g);
+                g.connect(ctx.destination);
+
+                g.gain.setValueAtTime(0.1, ctx.currentTime + i * 0.05);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1);
+
+                noise.start(ctx.currentTime + i * 0.05);
+                noise.stop(ctx.currentTime + i * 0.1);
+            }
+        }
+
+        function playFlipSound() {
+            const flip = document.getElementById("flipSound");
+            if (!flip) return;
+
+            flip.currentTime = 0;
+            flip.play().catch(() => { });
+        }
+
+    </script>
+</body>
+</html>
